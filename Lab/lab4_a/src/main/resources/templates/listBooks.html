@@ -1,0 +1,80 @@
+<div class="container" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <h1 class="mt-3">Search by title and author</h1>
+    <div class="w-25 mb-4">
+
+        <form action="/books" method="GET">
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" th:value="${title == null ? '' : title}" name="title">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <select name="authorId" class="form-select">
+                    <option th:value="${null}">Authors</option>
+                    <option th:each="author : ${authors}"
+                            th:value="${author.getId}"
+                            th:text="${author.getName()}"
+                            th:selected="${authorId != null && author.getId() == authorId}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+
+        </form>
+    </div>
+
+
+    <form th:if="${page.getTotalElements() > 0}" action="/bookReservation" method="POST">
+        <h2>Choose a book:</h2>
+        <div class="book-option d-flex align-items-center" th:each="book : ${page.getContent()}">
+            <input type="radio" name="bookTitle" th:value="${book.getTitle()}">
+            <th:block th:text="'Title: ' + ${book.getTitle()} + ', Genre: ' + ${book.getGenre()} + ', Rating: '
+            + ${book.getAverageRating()} + ', Author: ' +  ${book.getAuthor().getName()} + ' ' + ${book.getAuthor().getSurname()}"/>
+
+            <div class="ms-auto d-flex gap-2">
+                <th:block sec:authorize="hasRole('ADMIN')">
+                    <a class="btn btn-primary" th:href="@{'/books/edit-form/{id}' (id=${book.getId()})}">Edit</a>
+                </th:block>
+                <th:block sec:authorize="hasRole('ADMIN')">
+                    <a class="btn btn-primary" th:href="@{'/books/delete/{id}' (id=${book.getId()})}">Delete</a>
+                </th:block>
+            </div>
+
+
+
+        </div>
+
+        <div th:include="fragments/paging :: pageSection(${page})"></div>
+
+
+        <th:block sec:authorize="hasRole('ADMIN')">
+            <a class="btn btn-primary" href="/books/add-form">Add new book</a>
+        </th:block>
+
+
+        <h2 class="mt-5">Enter your information:</h2>
+        <div class="w-25 mb-5">
+
+
+            <div class="mb-3">
+                <label class="form-label">Your Name:</label>
+                <input type="text" class="form-control" required name="readerName">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Your Address:</label>
+                <input type="text" class="form-control" required name="readerAddress">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Choose number of copies:</label>
+                <input type="number" class="form-control" required name="numCopies">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Reserve Book</button>
+        </div>
+
+    </form>
+</div>

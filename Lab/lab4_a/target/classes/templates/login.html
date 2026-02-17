@@ -1,0 +1,16 @@
+<h1 class="text-center mt-4">Login</h1>
+
+<div class="container bg-primary-subtle mt-5 rounded-3 p-3 shadow">
+    <div th:if="${param.error}" th:text="${param.error}" class="text-danger"></div>
+    <form action="/login" method="post">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

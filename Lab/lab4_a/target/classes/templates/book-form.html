@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+<h1 class="text-center mt-4">Book Form</h1>
+
+<div class="container bg-primary-subtle mt-5 rounded-3 p-3 shadow">
+    <div th:if="${param.error}" th:text="${param.error}" class="text-danger"></div>
+    <form method="post" th:action="@{${book == null ? '/books' : '/books/' + book.getId()}}">
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="title" th:value="${book != null ? book.getTitle() : ''}">
+        </div>
+        <div class="mb-3">
+            <label  class="form-label">Username</label>
+            <input type="text" class="form-control" name="genre" th:value="${book != null ? book.getGenre() : ''}">
+        </div>
+        <div class="mb-3">
+            <label  class="form-label">Rating</label>
+            <input type="number" class="form-control" name="avgRating" th:value="${book != null ? book.getAverageRating() : 0}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <select name="authorId" class="form-select">
+                <option value="" disabled>-- choose --</option>
+                <option th:each="a: ${authors}"
+                        th:value="${a.getId()}"
+                        th:text="${a.getName()} + ' ' + ${a.getSurname()}"
+                        th:selected="${book != null and a.getId() == book.getAuthor().getId()}"
+                ></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary" th:text="${book == null ? 'Save' : 'Update'}"></button>
+    </form>
+</div>
+
+<!--<h1>Books</h1>-->
+
+<!--<form method="post" th:action="@{${book == null ? '/books' : '/books/' + book.getId()}}">-->
+<!--    <label>-->
+<!--        Title:-->
+<!--        <input type="text" name="title" th:value="${book != null ? book.getTitle() : ''}">-->
+<!--    </label><br>-->
+
+<!--    <label>-->
+<!--        Genre:-->
+<!--        <input type="text" name="genre" th:value="${book != null ? book.getGenre() : ''}">-->
+<!--    </label><br>-->
+
+<!--    <label>-->
+<!--        Rating:-->
+<!--        <input type="number" name="avgRating" th:value="${book != null ? book.getAverageRating() : 0}">-->
+<!--    </label><br>-->
+
+<!--    <label>-->
+<!--        Author:-->
+<!--        <select name="authorId">-->
+<!--            <option value="" disabled>&#45;&#45; choose &#45;&#45;</option>-->
+<!--            <option th:each="a: ${authors}"-->
+<!--                    th:value="${a.getId()}"-->
+<!--                    th:text="${a.getName()} + ' ' + ${a.getSurname()}"-->
+<!--                    th:selected="${book != null and a.getId() == book.getAuthor().getId()}"-->
+<!--            ></option>-->
+<!--        </select>-->
+<!--    </label><br>-->
+
+<!--    <button type="submit" th:text="${book == null ? 'Save' : 'Update'}"></button>-->
+<!--</form>-->
+
+</body>
+</html>

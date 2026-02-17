@@ -1,0 +1,49 @@
+
+<div xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <div>
+        <h2>Search by title and author</h2>
+        <form action="/" method="GET">
+            <label>Title <input type="text" th:value="${title == null ? '' : title}" name="title"></label><br/>
+            <label>Authors
+                <select name="authorId">
+                    <option>Authors</option>
+                    <option th:each="author : ${authors}"
+                    th:value="${author.getId}"
+                    th:text="${author.getName()}"
+                    th:selected="${authorId != null && author.getId() == authorId}"></option>
+                </select>
+            </label><br/>
+            <button type="submit">Search</button>
+
+        </form>
+    </div>
+
+
+    <form th:if="${page.getTotalElements() > 0}" action="/bookReservation" method="POST">
+        <h2>Choose a book:</h2>
+        <div class="book-option" th:each="book : ${page.getContent()}">
+            <input type="radio" name="bookTitle" th:value="${book.getTitle()}">
+            <th:block th:text="'Title: ' + ${book.getTitle()} + ', Genre: ' + ${book.getGenre()} + ', Rating: '
+            + ${book.getAverageRating()} + ', Author: ' +  ${book.getAuthor().getName()} + ' ' + ${book.getAuthor().getSurname()}"/>
+            <a th:href="@{'/books/edit-form/{id}' (id=${book.getId()})}">Edit</a>
+            <a th:href="@{'/books/delete/{id}' (id=${book.getId()})}">Delete</a>
+        </div>
+
+        <div th:include="fragments/paging :: pageSection(${page})"></div>
+
+
+        <a href="/add-form">Add new book</a>
+
+        <h2>Enter your information:</h2>
+        <label>Your Name:</label>
+        <input type="text" name="readerName" required><br/>
+        <label>Your Address:</label>
+        <input type="text" name="readerAddress" required><br/>
+
+        <h2>Choose number of copies:</h2>
+        <input type="number" name="numCopies" min="1" max="10" required><br/>
+        <br/>
+        <input type="submit" value="Reserve Book">
+    </form>
+</div>

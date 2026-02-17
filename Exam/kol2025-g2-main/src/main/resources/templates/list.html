@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Ski Slope List</title>
+</head>
+<body>
+
+<div>
+    <!-- The form below should invoke the method SkiSlopeController.listAll -->
+    <form id="filter-form">
+        <label for="name">Slope Name</label>
+        <input id="name" type="text" th:value="${name}" name="name"/>
+
+        <label for="length">Slope Length (in meters)</label>
+        <input id="length" type="number" th:value="${length}" name="length"/>
+
+        <label for="difficulty">Slope Difficulty</label>
+        <select id="difficulty" name="difficulty">
+            <option value="">All</option>
+            <option th:each="diff : ${difficulties}"
+                    th:value="${diff}"
+                    th:text="${diff}"
+                    th:selected="${difficulty != null && difficulty == diff}">
+            </option>
+
+        </select>
+
+        <label for="skiResort">Ski Resort</label>
+        <select id="skiResort" name="skiResort">
+            <option value="">All</option>
+            <option th:each="res : ${resorts}"
+                    th:value="${res.id}"
+                    th:text="${res.name}"
+                    th:selected="${resortId != null && resortId == res.id}"></option>
+
+        </select>
+
+        <button id="filter" type="submit">Filter</button>
+    </form>
+
+    <div sec:authorize="hasRole('ADMIN')">
+        <!-- SkiSlopeController.showAdd -->
+        <a href="/ski-slopes/add" class="add-item">Add new ski slope</a>
+    </div>
+
+    <table>
+        <tr>
+            <th>Slope Name</th>
+            <th>Length</th>
+            <th>Difficulty</th>
+            <th>Ski Resort</th>
+            <th>Open/Closed</th>
+            <th>Actions</th>
+        </tr>
+        <!-- For each ski slope you should have one <tr> like below -->
+        <tr class="item" th:each="slope : ${page.getContent()}">
+            <td th:text="${slope.name}">[slope.name]</td>
+            <td th:text="${slope.length}">[slope.length]</td>
+            <td th:text="${slope.difficulty}">[slope.difficulty]</td>
+            <td th:text="${slope.skiResort.name}">[slope.skiResort.name]</td>
+            <td th:text="${slope.closed ? 'CLOSED' : 'OPEN'}">[slope.closed] -> OPEN/CLOSED</td>
+            <td>
+                <!-- SkiSlopeController.edit -->
+                <a sec:authorize="hasRole('ADMIN')" class="edit-item" th:href="@{'/ski-slopes/edit/{id}' (id=${slope.id})}">Edit</a>
+
+                <!-- SkiSlopeController.delete -->
+                <form sec:authorize="hasRole('ADMIN')" method="post" th:action="@{'/ski-slopes/delete/{id}' (id=${slope.id})}">
+                    <button type="submit" class="delete-item">Delete</button>
+                </form>
+
+                <!-- SkiSlopeController.close -->
+                <form th:if="${slope.closed == false}" sec:authorize="hasRole('ADMIN')" method="post" th:action="@{'/ski-slopes/close/{id}' (id=${slope.id})}">
+                    <button type="submit" class="close-item">Close</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <div th:include="pagination :: pageSection(${page})"></div>
+
+</div>
+<div>
+    <ul id="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</div>
+</body>
+</html>
